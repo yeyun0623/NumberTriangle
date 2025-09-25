@@ -1,5 +1,7 @@
 import java.io.*;
 
+import java.util.List;
+import java.util.ArrayList;
 /**
  * This is the provided NumberTriangle class to be used in this coding task.
  *
@@ -107,28 +109,35 @@ public class NumberTriangle {
         // open the file and get a BufferedReader object whose methods
         // are more convenient to work with when reading the file contents.
         InputStream inputStream = NumberTriangle.class.getClassLoader().getResourceAsStream(fname);
+        if (inputStream == null) {
+            throw new FileNotFoundException("File not found: " + fname);
+        }
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
-
-        // TODO define any variables that you want to use to store things
-
-        // will need to return the top of the NumberTriangle,
-        // so might want a variable for that.
-        NumberTriangle top = null;
-
+        List<List<NumberTriangle>> rows = new ArrayList<>();
         String line = br.readLine();
         while (line != null) {
-
-            // remove when done; this line is included so running starter code prints the contents of the file
-            System.out.println(line);
-
-            // TODO process the line
-
-            //read the next line
+            String[] tokens = line.trim().split("\\s+");
+            List<NumberTriangle> currentRow = new ArrayList<>();
+            for (String token : tokens) {
+                currentRow.add(new NumberTriangle(Integer.parseInt(token)));
+            }
+            rows.add(currentRow);
             line = br.readLine();
         }
         br.close();
-        return top;
+
+        // link parents to children
+        for (int i = 0; i < rows.size() - 1; i++) {
+            List<NumberTriangle> current = rows.get(i);
+            List<NumberTriangle> next = rows.get(i + 1);
+            for (int j = 0; j < current.size(); j++) {
+                current.get(j).setLeft(next.get(j));
+                current.get(j).setRight(next.get(j + 1));
+            }
+        }
+
+        return rows.get(0).get(0); // top of triangle
     }
 
     public static void main(String[] args) throws IOException {
