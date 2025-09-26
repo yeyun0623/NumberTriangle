@@ -92,7 +92,7 @@ public class NumberTriangle {
     public int retrieve(String path) {
         NumberTriangle current = this;
         for (char ch: path.toCharArray()){
-            if (ch == '1') {
+            if (ch == 'l') {
                 current = current.left;
             } else if (ch == 'r'){
                 current = current.right;
